@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  vault:
+    image: hashicorp/vault:1.13.2
+    container_name: vault
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: "root" # Root token for development mode
+      VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200" # Bind to all interfaces
+    volumes:
+      - ./vault/data:/vault/data # Persistent data (for production)
+      - ./vault/config:/vault/config # Custom configuration files
+    command: >
+      vault server -dev -dev-root-token-id=root
+    networks:
+      - vault-network
+
+networks:
+  vault-network:
+    driver: bridge
+
